@@ -97,6 +97,14 @@ export function Header() {
             >
               How It Works
             </Link>
+            {!isSignedIn && (
+              <Link
+                href="/signin"
+                className="text-sm font-medium text-primary hover:text-primary/80 transition-colors"
+              >
+                Sign In
+              </Link>
+            )}
             
             {/* Track Order - Prominent when active booking exists */}
             {hasActiveBooking && (
@@ -145,50 +153,58 @@ export function Header() {
               </Button>
             )}
             
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="gap-2">
-                  <User className="w-4 h-4" />
-                  <span>Account</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
-                {hasActiveBooking && (
-                  <DropdownMenuItem asChild>
-                    <Link 
-                      href={`/track${activeBooking ? `?booking=${activeBooking.id}` : ""}`}
-                      className="flex items-center gap-2 font-medium"
+            {isSignedIn ? (
+              <>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="sm" className="gap-2">
+                      <User className="w-4 h-4" />
+                      <span>Account</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-48">
+                    {hasActiveBooking && (
+                      <DropdownMenuItem asChild>
+                        <Link 
+                          href={`/track${activeBooking ? `?booking=${activeBooking.id}` : ""}`}
+                          className="flex items-center gap-2 font-medium"
+                        >
+                          <Package className="w-4 h-4" />
+                          Track Order
+                          <Badge variant="secondary" className="ml-auto text-xs">Active</Badge>
+                        </Link>
+                      </DropdownMenuItem>
+                    )}
+                    <DropdownMenuItem asChild>
+                      <Link href="/dashboard" className="flex items-center gap-2">
+                        <Calendar className="w-4 h-4" />
+                        My Bookings
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href="/results" className="flex items-center gap-2">
+                        <FileText className="w-4 h-4" />
+                        My Results
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem 
+                      variant="destructive"
+                      onSelect={(e) => {
+                        e.preventDefault();
+                        handleSignOut();
+                      }}
                     >
-                      <Package className="w-4 h-4" />
-                      Track Order
-                      <Badge variant="secondary" className="ml-auto text-xs">Active</Badge>
-                    </Link>
-                  </DropdownMenuItem>
-                )}
-                <DropdownMenuItem asChild>
-                  <Link href="/dashboard" className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4" />
-                    My Bookings
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/results" className="flex items-center gap-2">
-                    <FileText className="w-4 h-4" />
-                    My Results
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem 
-                  variant="destructive"
-                  onSelect={(e) => {
-                    e.preventDefault();
-                    handleSignOut();
-                  }}
-                >
-                  <LogOut className="w-4 h-4 mr-2" />
-                  Sign Out
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+                      <LogOut className="w-4 h-4 mr-2" />
+                      Sign Out
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </>
+            ) : (
+              <Button asChild variant="outline" className="gap-2">
+                <Link href="/signin">Sign In</Link>
+              </Button>
+            )}
             <Button asChild>
               <Link href="/book">Book Now</Link>
             </Button>
@@ -276,6 +292,15 @@ export function Header() {
               >
                 My Results
               </Link>
+              {!isSignedIn && (
+                <Link
+                  href="/signin"
+                  className="px-3 py-2 text-sm font-medium text-primary hover:text-primary/80 hover:bg-primary/5 rounded-lg transition-colors"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Sign In
+                </Link>
+              )}
               <div className="pt-2 px-3">
                 <Button asChild className="w-full">
                   <Link href="/book">Book Now</Link>

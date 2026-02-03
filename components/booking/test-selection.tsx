@@ -281,18 +281,22 @@ export function TestSelection({
         </div>
       )}
 
-      {/* Continue Button */}
-      <div className="flex justify-end pt-4">
-        <Button
-          onClick={onContinue}
-          disabled={!canContinue}
-          size="lg"
-          className="gap-2"
-        >
-          Continue to Schedule
-          <ChevronRight className="w-4 h-4" />
-        </Button>
-      </div>
+      {/* Sticky Continue Button - Shows immediately when test is selected */}
+      {selectedTests.length > 0 && (
+        <div className="sticky bottom-0 left-0 right-0 bg-background border-t border-border p-4 -mx-4 sm:-mx-6 lg:-mx-8 mt-6 shadow-lg z-10">
+          <div className="max-w-7xl mx-auto flex justify-end">
+            <Button
+              onClick={onContinue}
+              disabled={!canContinue}
+              size="lg"
+              className="gap-2 w-full sm:w-auto"
+            >
+              Continue to Schedule
+              <ChevronRight className="w-4 h-4" />
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

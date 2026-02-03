@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,6 +17,7 @@ import {
   Bell,
 } from "lucide-react";
 import { PreparationRequirements } from "./preparation-requirements";
+import { SignInGate } from "./sign-in-gate";
 
 interface BookingSummaryProps {
   selectedTests: LabTest[];
@@ -30,6 +31,8 @@ interface BookingSummaryProps {
   };
   totalAmount: number;
   onBack: () => void;
+  isSignedIn?: boolean;
+  setIsSignedIn?: (value: boolean) => void;
 }
 
 export function BookingSummary({
@@ -39,11 +42,25 @@ export function BookingSummary({
   address,
   totalAmount,
   onBack,
+  isSignedIn = false,
+  setIsSignedIn,
 }: BookingSummaryProps) {
   const router = useRouter();
   const [paymentMethod, setPaymentMethod] = useState<"mpesa" | "card">("mpesa");
   const [mpesaPhone, setMpesaPhone] = useState(address.phone);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [showSignIn, setShowSignIn] = useState(!isSignedIn);
+
+  // Check if user is signed in on mount
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const signedIn = localStorage.getItem("isSignedIn") === "true";
+      if (signedIn) {
+        setShowSignIn(false);
+        if (setIsSignedIn) setIsSignedIn(true);
+      }
+    }
+  }, [setIsSignedIn]);
 
   const collectionFee = 200;
   const grandTotal = totalAmount + collectionFee;
@@ -77,6 +94,32 @@ export function BookingSummary({
     // Redirect to tracking page
     router.push(`/track?booking=${bookingId}`);
   };
+
+  // If not signed in, show sign-in gate first
+  if (showSignIn) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h2 className="text-2xl font-bold text-foreground mb-2">
+            Sign in to complete your booking
+          </h2>
+          <p className="text-muted-foreground">
+            Create an account or sign in to securely complete your payment and receive your results.
+          </p>
+        </div>
+        <SignInGate
+          onContinue={() => {
+            setShowSignIn(false);
+            if (setIsSignedIn) setIsSignedIn(true);
+            if (typeof window !== "undefined") {
+              localStorage.setItem("isSignedIn", "true");
+            }
+          }}
+          onBack={onBack}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -281,30 +324,32 @@ export function BookingSummary({
         </p>
       </div>
 
-      {/* Action Buttons */}
-      <div className="flex justify-between pt-4">
-        <Button variant="outline" onClick={onBack} className="gap-2 bg-transparent">
-          <ChevronLeft className="w-4 h-4" />
-          Back
-        </Button>
-        <Button
-          onClick={handlePayment}
-          disabled={isProcessing}
-          size="lg"
-          className="gap-2 min-w-[200px]"
-        >
-          {isProcessing ? (
-            <>
-              <Loader2 className="w-4 h-4 animate-spin" />
-              Processing...
-            </>
-          ) : (
-            <>
-              <Shield className="w-4 h-4" />
-              Pay KSh {grandTotal.toLocaleString()}
-            </>
-          )}
-        </Button>
+      {/* Sticky Action Buttons */}
+      <div className="sticky bottom-0 left-0 right-0 bg-background border-t border-border p-4 -mx-4 sm:-mx-6 lg:-mx-8 mt-6 shadow-lg z-10">
+        <div className="max-w-7xl mx-auto flex justify-between gap-4">
+          <Button variant="outline" onClick={onBack} className="gap-2 bg-transparent">
+            <ChevronLeft className="w-4 h-4" />
+            Back
+          </Button>
+          <Button
+            onClick={handlePayment}
+            disabled={isProcessing}
+            size="lg"
+            className="gap-2 flex-1 sm:flex-initial min-w-[200px]"
+          >
+            {isProcessing ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Processing...
+              </>
+            ) : (
+              <>
+                <Shield className="w-4 h-4" />
+                Pay KSh {grandTotal.toLocaleString()}
+              </>
+            )}
+          </Button>
+        </div>
       </div>
     </div>
   );

@@ -142,21 +142,23 @@ export function AddressForm({
         </div>
       </div>
 
-      {/* Navigation Buttons */}
-      <div className="flex justify-between pt-4">
-        <Button variant="outline" onClick={onBack} className="gap-2 bg-transparent">
-          <ChevronLeft className="w-4 h-4" />
-          Back
-        </Button>
-        <Button
-          onClick={onContinue}
-          disabled={!canContinue}
-          size="lg"
-          className="gap-2"
-        >
-          Continue to Payment
-          <ChevronRight className="w-4 h-4" />
-        </Button>
+      {/* Sticky Navigation Buttons */}
+      <div className="sticky bottom-0 left-0 right-0 bg-background border-t border-border p-4 -mx-4 sm:-mx-6 lg:-mx-8 mt-6 shadow-lg z-10">
+        <div className="max-w-7xl mx-auto flex justify-between gap-4">
+          <Button variant="outline" onClick={onBack} className="gap-2 bg-transparent">
+            <ChevronLeft className="w-4 h-4" />
+            Back
+          </Button>
+          <Button
+            onClick={onContinue}
+            disabled={!canContinue}
+            size="lg"
+            className="gap-2 flex-1 sm:flex-initial"
+          >
+            Continue to Payment
+            <ChevronRight className="w-4 h-4" />
+          </Button>
+        </div>
       </div>
     </div>
   );

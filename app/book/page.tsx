@@ -7,7 +7,6 @@ import { Footer } from "@/components/footer";
 import { TestSelection } from "@/components/booking/test-selection";
 import { TimeSlotPicker } from "@/components/booking/time-slot-picker";
 import { AddressForm } from "@/components/booking/address-form";
-import { SignInGate } from "@/components/booking/sign-in-gate";
 import { BookingSummary } from "@/components/booking/booking-summary";
 import { labTests, labPackages } from "@/lib/data";
 import type { LabTest } from "@/lib/types";
@@ -62,12 +61,16 @@ function BookingContent() {
   const canProceedToStep4 = address.street && address.area && address.phone;
   const [isSignedIn, setIsSignedIn] = useState(false);
 
+  // Auto-scroll to top when step changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [step]);
+
   const steps = [
     { number: 1, title: "Select Tests" },
     { number: 2, title: "Choose Time" },
     { number: 3, title: "Your Details" },
-    { number: 4, title: "Sign In" },
-    { number: 5, title: "Payment" },
+    { number: 4, title: "Review & Pay" },
   ];
 
   return (
@@ -151,23 +154,15 @@ function BookingContent() {
               )}
 
               {step === 4 && (
-                <SignInGate
-                  onContinue={() => {
-                    setIsSignedIn(true);
-                    setStep(5);
-                  }}
-                  onBack={() => setStep(3)}
-                />
-              )}
-
-              {step === 5 && (
                 <BookingSummary
                   selectedTests={selectedTests}
                   selectedDate={selectedDate!}
                   selectedTime={selectedTime}
                   address={address}
                   totalAmount={totalAmount}
-                  onBack={() => setStep(4)}
+                  onBack={() => setStep(3)}
+                  isSignedIn={isSignedIn}
+                  setIsSignedIn={setIsSignedIn}
                 />
               )}
             </div>
