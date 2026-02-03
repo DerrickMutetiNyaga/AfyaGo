@@ -78,7 +78,7 @@ export function HeroCard() {
                     </>
                   ) : (
                     <>
-                      Sign in or get started
+                      Get Started
                       <ArrowRight className="w-5 h-5" />
                     </>
                   )}

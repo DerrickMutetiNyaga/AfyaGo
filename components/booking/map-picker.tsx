@@ -2,21 +2,14 @@
 
 import { useEffect, useRef } from "react";
 import L from "leaflet";
+import "leaflet/dist/leaflet.css";
 
 interface MapPickerProps {
   position: [number, number];
   onPositionChange: (lat: number, lng: number) => void;
 }
 
-// Fix for default marker icon in Next.js
-if (typeof window !== "undefined") {
-  delete (L.Icon.Default.prototype as any)._getIconUrl;
-  L.Icon.Default.mergeOptions({
-    iconRetinaUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png",
-    iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png",
-    shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
-  });
-}
+// Fix for default marker icon in Next.js - will be called in useEffect
 
 export default function MapPicker({ position, onPositionChange }: MapPickerProps) {
   const mapRef = useRef<L.Map | null>(null);
@@ -24,7 +17,15 @@ export default function MapPicker({ position, onPositionChange }: MapPickerProps
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!containerRef.current || mapRef.current) return;
+    if (!containerRef.current || mapRef.current || typeof window === "undefined") return;
+
+    // Fix for default marker icon in Next.js
+    delete (L.Icon.Default.prototype as any)._getIconUrl;
+    L.Icon.Default.mergeOptions({
+      iconRetinaUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png",
+      iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png",
+      shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
+    });
 
     // Initialize map
     const map = L.map(containerRef.current, {

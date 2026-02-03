@@ -27,7 +27,7 @@ export function TestsGrid() {
             </p>
           </div>
           <Button variant="outline" asChild>
-            <Link href="/book" className="gap-2">
+            <Link href="/tests" className="gap-2">
               View All Tests
               <ChevronRight className="w-4 h-4" />
             </Link>

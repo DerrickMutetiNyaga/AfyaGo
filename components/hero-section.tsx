@@ -4,6 +4,7 @@ import React from "react"
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, MapPin, Clock, Shield, Star } from "lucide-react";
@@ -137,7 +138,7 @@ export function HeroSection() {
 
                 <div className="pt-2 border-t border-border">
                   <Button asChild className="w-full">
-                    <a href="/book">View All Tests</a>
+                    <Link href="/tests">View All Tests</Link>
                   </Button>
                 </div>
               </div>
