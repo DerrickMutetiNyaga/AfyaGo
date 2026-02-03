@@ -97,14 +97,6 @@ export function Header() {
             >
               How It Works
             </Link>
-            {!isSignedIn && (
-              <Link
-                href="/signin"
-                className="text-sm font-medium text-primary hover:text-primary/80 transition-colors"
-              >
-                Sign In
-              </Link>
-            )}
             
             {/* Track Order - Prominent when active booking exists */}
             {hasActiveBooking && (

@@ -28,6 +28,11 @@ interface BookingSummaryProps {
     area: string;
     landmark: string;
     phone: string;
+    latitude?: number;
+    longitude?: number;
+    locationLabel?: string;
+    directions?: string;
+    useMap?: boolean;
   };
   totalAmount: number;
   onBack: () => void;
@@ -79,7 +84,9 @@ export function BookingSummary({
       status: 'confirmed' as const,
       scheduledDate: selectedDate.toISOString().split('T')[0],
       scheduledTime: selectedTime,
-      address: `${address.street}, ${address.area}${address.landmark ? ` (${address.landmark})` : ''}`,
+      address: address.useMap
+        ? `${address.locationLabel || "Location"}${address.directions ? ` - ${address.directions}` : ""}${address.latitude && address.longitude ? ` (${address.latitude.toFixed(6)}, ${address.longitude.toFixed(6)})` : ""}`
+        : `${address.street}, ${address.area}${address.landmark ? ` (${address.landmark})` : ''}`,
       paymentMethod: paymentMethod,
       paymentStatus: 'completed' as const,
       totalAmount: grandTotal,
@@ -155,9 +162,17 @@ export function BookingSummary({
           <div className="sm:col-span-2">
             <p className="text-muted-foreground">Collection Address</p>
             <p className="font-medium text-foreground">
-              {address.street}, {address.area}
-              {address.landmark && ` (${address.landmark})`}
+              {address.useMap
+                ? address.locationLabel
+                  ? `${address.locationLabel}${address.directions ? ` - ${address.directions}` : ""}`
+                  : "Location on map"
+                : `${address.street}, ${address.area}${address.landmark ? ` (${address.landmark})` : ""}`}
             </p>
+            {address.useMap && address.latitude && address.longitude && (
+              <p className="text-xs text-muted-foreground mt-1">
+                Coordinates: {address.latitude.toFixed(6)}, {address.longitude.toFixed(6)}
+              </p>
+            )}
           </div>
           <div>
             <p className="text-muted-foreground">Contact Number</p>

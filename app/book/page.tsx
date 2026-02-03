@@ -23,6 +23,11 @@ function BookingContent() {
     area: "",
     landmark: "",
     phone: "",
+    latitude: undefined as number | undefined,
+    longitude: undefined as number | undefined,
+    locationLabel: "",
+    directions: "",
+    useMap: true,
   });
 
   // Handle URL params for pre-selected tests/packages/search
@@ -58,7 +63,9 @@ function BookingContent() {
 
   const canProceedToStep2 = selectedTests.length > 0;
   const canProceedToStep3 = selectedDate && selectedTime;
-  const canProceedToStep4 = address.street && address.area && address.phone;
+  const canProceedToStep4 = address.useMap
+    ? address.latitude && address.longitude && address.phone && address.locationLabel
+    : address.street && address.area && address.phone;
   const [isSignedIn, setIsSignedIn] = useState(false);
 
   // Auto-scroll to top when step changes
